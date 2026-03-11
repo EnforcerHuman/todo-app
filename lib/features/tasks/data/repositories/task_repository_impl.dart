@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:http/http.dart' as http;
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/error/app_exception.dart';
@@ -12,21 +11,18 @@ import '../models/task_model.dart';
 class TaskRepositoryImpl implements TaskRepository {
   const TaskRepositoryImpl({
     required FirebaseAuth auth,
-    required http.Client client,
     required TaskRemoteDataSource remoteDataSource,
   }) : _auth = auth,
-       _client = client,
        _remoteDataSource = remoteDataSource;
 
   final FirebaseAuth _auth;
-  final http.Client _client;
   final TaskRemoteDataSource _remoteDataSource;
 
   @override
   Future<List<TaskEntity>> fetchTasks() async {
     final uri = await _buildCollectionUri();
     final tasks = List<TaskEntity>.from(
-      await _remoteDataSource.fetchTasks(client: _client, uri: uri),
+      await _remoteDataSource.fetchTasks(uri: uri),
     );
     tasks.sort((left, right) => right.updatedAt.compareTo(left.updatedAt));
     return tasks;
@@ -35,18 +31,13 @@ class TaskRepositoryImpl implements TaskRepository {
   @override
   Future<void> addTask(TaskEntity task) async {
     final uri = await _buildCollectionUri();
-    await _remoteDataSource.addTask(
-      client: _client,
-      uri: uri,
-      task: TaskModel.fromEntity(task),
-    );
+    await _remoteDataSource.addTask(uri: uri, task: TaskModel.fromEntity(task));
   }
 
   @override
   Future<void> updateTask(TaskEntity task) async {
     final uri = await _buildItemUri(task.id);
     await _remoteDataSource.updateTask(
-      client: _client,
       uri: uri,
       task: TaskModel.fromEntity(task),
     );
@@ -55,7 +46,7 @@ class TaskRepositoryImpl implements TaskRepository {
   @override
   Future<void> deleteTask(String taskId) async {
     final uri = await _buildItemUri(taskId);
-    await _remoteDataSource.deleteTask(client: _client, uri: uri);
+    await _remoteDataSource.deleteTask(uri: uri);
   }
 
   @override
@@ -65,7 +56,6 @@ class TaskRepositoryImpl implements TaskRepository {
   }) async {
     final uri = await _buildItemUri(taskId);
     await _remoteDataSource.patchTask(
-      client: _client,
       uri: uri,
       body: {
         'isCompleted': isCompleted,

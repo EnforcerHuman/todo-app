@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
+import 'core/network/api_service.dart';
+import 'core/services/network_info.dart';
 import 'features/auth/data/datasource/auth_remote_data_source.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
@@ -47,15 +49,19 @@ class AppDependencies {
   factory AppDependencies.create() {
     final firebaseAuth = FirebaseAuth.instance;
     final client = http.Client();
+    final networkInfo = NetworkInfoImpl();
+    final apiService = ApiService(client: client, networkInfo: networkInfo);
 
     final authRepository = AuthRepositoryImpl(
-      remoteDataSource: AuthRemoteDataSource(firebaseAuth: firebaseAuth),
+      remoteDataSource: AuthRemoteDataSource(
+        firebaseAuth: firebaseAuth,
+        networkInfo: networkInfo,
+      ),
     );
 
     final taskRepository = TaskRepositoryImpl(
       auth: firebaseAuth,
-      client: client,
-      remoteDataSource: const TaskRemoteDataSource(),
+      remoteDataSource: TaskRemoteDataSource(apiService: apiService),
     );
 
     return AppDependencies._(

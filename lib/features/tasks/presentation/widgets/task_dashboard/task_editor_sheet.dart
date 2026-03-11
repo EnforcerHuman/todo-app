@@ -51,7 +51,8 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
         child: BlocConsumer<TaskBloc, TaskState>(
           listenWhen: (previous, current) =>
               previous.isSubmitting != current.isSubmitting ||
-              previous.status != current.status,
+              previous.status != current.status ||
+              previous.message != current.message,
           listener: (context, state) {
             final shouldClose =
                 !state.isSubmitting &&
@@ -62,6 +63,20 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
 
             if (shouldClose && mounted) {
               Navigator.of(context).pop();
+              return;
+            }
+
+            final shouldShowError =
+                !state.isSubmitting &&
+                _hasSubmitted &&
+                state.status == TaskStatus.failure &&
+                state.message != null &&
+                state.message!.isNotEmpty;
+
+            if (shouldShowError) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: AppText(state.message!)));
             }
           },
           builder: (context, state) {

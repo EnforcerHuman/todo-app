@@ -1,13 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../../core/error/app_exception.dart';
+import '../../../../core/services/network_info.dart';
 import '../models/app_user_model.dart';
 
 class AuthRemoteDataSource {
-  const AuthRemoteDataSource({required FirebaseAuth firebaseAuth})
-    : _firebaseAuth = firebaseAuth;
+  const AuthRemoteDataSource({
+    required FirebaseAuth firebaseAuth,
+    required NetworkInfo networkInfo,
+  }) : _firebaseAuth = firebaseAuth,
+       _networkInfo = networkInfo;
 
   final FirebaseAuth _firebaseAuth;
+  final NetworkInfo _networkInfo;
 
   Stream<AppUserModel?> authStateChanges() {
     return _firebaseAuth.authStateChanges().map(_mapUser);
@@ -18,6 +23,7 @@ class AuthRemoteDataSource {
     required String password,
   }) async {
     try {
+      await _networkInfo.ensureConnected();
       final credential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
@@ -35,6 +41,7 @@ class AuthRemoteDataSource {
     required String name,
   }) async {
     try {
+      await _networkInfo.ensureConnected();
       final credential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),

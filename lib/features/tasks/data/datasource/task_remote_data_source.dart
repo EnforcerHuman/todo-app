@@ -1,19 +1,18 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../../../core/error/app_exception.dart';
+import '../../../../core/network/api_service.dart';
 import '../models/task_model.dart';
 
 class TaskRemoteDataSource {
-  const TaskRemoteDataSource();
+  const TaskRemoteDataSource({required ApiService apiService})
+    : _apiService = apiService;
 
-  Future<List<TaskModel>> fetchTasks({
-    required http.Client client,
-    required Uri uri,
-  }) async {
-    final response = await client.get(uri);
-    _throwIfInvalid(response);
+  final ApiService _apiService;
+
+  Future<List<TaskModel>> fetchTasks({required Uri uri}) async {
+    final response = await _apiService.get(uri);
+    _throwIfInvalid(response.statusCode);
 
     final body = jsonDecode(response.body);
     if (body == null) {
@@ -31,48 +30,34 @@ class TaskRemoteDataSource {
         .toList();
   }
 
-  Future<void> addTask({
-    required http.Client client,
-    required Uri uri,
-    required TaskModel task,
-  }) async {
-    final response = await client.post(uri, body: jsonEncode(task.toJson()));
-    _throwIfInvalid(response);
+  Future<void> addTask({required Uri uri, required TaskModel task}) async {
+    final response = await _apiService.post(uri, body: task.toJson());
+    _throwIfInvalid(response.statusCode);
   }
 
-  Future<void> updateTask({
-    required http.Client client,
-    required Uri uri,
-    required TaskModel task,
-  }) async {
-    final response = await client.patch(uri, body: jsonEncode(task.toJson()));
-    _throwIfInvalid(response);
+  Future<void> updateTask({required Uri uri, required TaskModel task}) async {
+    final response = await _apiService.patch(uri, body: task.toJson());
+    _throwIfInvalid(response.statusCode);
   }
 
-  Future<void> deleteTask({
-    required http.Client client,
-    required Uri uri,
-  }) async {
-    final response = await client.delete(uri);
-    _throwIfInvalid(response);
+  Future<void> deleteTask({required Uri uri}) async {
+    final response = await _apiService.delete(uri);
+    _throwIfInvalid(response.statusCode);
   }
 
   Future<void> patchTask({
-    required http.Client client,
     required Uri uri,
     required Map<String, dynamic> body,
   }) async {
-    final response = await client.patch(uri, body: jsonEncode(body));
-    _throwIfInvalid(response);
+    final response = await _apiService.patch(uri, body: body);
+    _throwIfInvalid(response.statusCode);
   }
 
-  void _throwIfInvalid(http.Response response) {
-    if (response.statusCode >= 200 && response.statusCode < 300) {
+  void _throwIfInvalid(int statusCode) {
+    if (statusCode >= 200 && statusCode < 300) {
       return;
     }
 
-    throw AppException(
-      'Task request failed with status ${response.statusCode}.',
-    );
+    throw AppException('Task request failed with status $statusCode.');
   }
 }
