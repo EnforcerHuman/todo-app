@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/utils/input_validators.dart';
+import '../../../../../core/widgets/app_text_field.dart';
 import '../../blocs/auth_form/auth_form_bloc.dart';
 
 class AuthFormCard extends StatefulWidget {
@@ -152,17 +153,15 @@ class _AuthFormCardState extends State<AuthFormCard> {
                         ),
                         SizedBox(height: sectionGap),
                         if (isSignUp) ...[
-                          TextFormField(
+                          AppTextField(
                             controller: _nameController,
                             textInputAction: TextInputAction.next,
                             style: TextStyle(
                               fontSize: adaptiveDense ? 14.sp : 15.sp,
                             ),
-                            decoration: InputDecoration(
-                              labelText: 'Full name',
-                              isDense: adaptiveDense,
-                              contentPadding: fieldContentPadding,
-                            ),
+                            labelText: 'Full name',
+                            isDense: adaptiveDense,
+                            contentPadding: fieldContentPadding,
                             validator: (value) =>
                                 value == null || value.trim().isEmpty
                                 ? 'Name is required.'
@@ -170,33 +169,29 @@ class _AuthFormCardState extends State<AuthFormCard> {
                           ),
                           SizedBox(height: fieldGap),
                         ],
-                        TextFormField(
+                        AppTextField(
                           controller: _emailController,
                           textInputAction: TextInputAction.next,
                           style: TextStyle(
                             fontSize: adaptiveDense ? 14.sp : 15.sp,
                           ),
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            isDense: adaptiveDense,
-                            contentPadding: fieldContentPadding,
-                          ),
+                          labelText: 'Email',
+                          isDense: adaptiveDense,
+                          contentPadding: fieldContentPadding,
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) =>
                               InputValidators.email(value ?? ''),
                         ),
                         SizedBox(height: fieldGap),
-                        TextFormField(
+                        AppTextField(
                           controller: _passwordController,
                           textInputAction: TextInputAction.done,
                           style: TextStyle(
                             fontSize: adaptiveDense ? 14.sp : 15.sp,
                           ),
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            isDense: adaptiveDense,
-                            contentPadding: fieldContentPadding,
-                          ),
+                          labelText: 'Password',
+                          isDense: adaptiveDense,
+                          contentPadding: fieldContentPadding,
                           obscureText: true,
                           validator: (value) =>
                               InputValidators.password(value ?? ''),

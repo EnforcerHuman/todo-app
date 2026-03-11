@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/utils/input_validators.dart';
+import '../../../../../core/widgets/app_text_field.dart';
 import '../../../domain/entities/task_entity.dart';
 
 class TaskEditorSheet extends StatefulWidget {
@@ -53,15 +54,15 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               SizedBox(height: 16.h),
-              TextFormField(
+              AppTextField(
                 controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
+                labelText: 'Title',
                 validator: (value) => InputValidators.taskTitle(value ?? ''),
               ),
               SizedBox(height: 16.h),
-              TextFormField(
+              AppTextField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
+                labelText: 'Description',
                 maxLines: 4,
               ),
               SizedBox(height: 20.h),
