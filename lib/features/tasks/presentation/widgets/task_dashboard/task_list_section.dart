@@ -125,10 +125,21 @@ class _TaskListHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const AppText.title('Today\'s list'),
+                  const AppText.title('Task\'s list'),
                   SizedBox(height: 6.h),
-                  const AppText.medium(
-                    'Keep the list short, clear, and easy to finish.',
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const AppText.medium(
+                        'Keep the list short, clear, and easy to finish.',
+                      ),
+                       AppText.medium(
+                        color: Color.fromARGB(241, 3, 3, 185),
+                        '***Tap on a task to view details***',
+                        
+                      ),
+                    ],
                   ),
                 ],
               ),
