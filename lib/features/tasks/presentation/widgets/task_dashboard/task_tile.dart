@@ -9,6 +9,7 @@ class TaskTile extends StatelessWidget {
     required this.task,
     this.isProcessing = false,
     this.isToggling = false,
+    required this.onOpen,
     required this.onDelete,
     required this.onEdit,
     required this.onToggle,
@@ -18,13 +19,20 @@ class TaskTile extends StatelessWidget {
   final TaskEntity task;
   final bool isProcessing;
   final bool isToggling;
+  final VoidCallback onOpen;
   final VoidCallback onDelete;
   final VoidCallback onEdit;
   final ValueChanged<bool> onToggle;
 
   @override
   Widget build(BuildContext context) {
-    final formatter = TimeOfDay.fromDateTime(task.updatedAt).format(context);
+    final updatedFormatter = TimeOfDay.fromDateTime(
+      task.updatedAt,
+    ).format(context);
+    final createdDate = MaterialLocalizations.of(
+      context,
+    ).formatShortDate(task.createdAt);
+    final createdTime = TimeOfDay.fromDateTime(task.createdAt).format(context);
     final accentColor = task.isCompleted
         ? const Color(0xFF16A34A)
         : const Color(0xFF155EEF);
@@ -41,128 +49,147 @@ class TaskTile extends StatelessWidget {
               absorbing: isBusy,
               child: Opacity(
                 opacity: isProcessing ? 0.45 : 1,
-                child: Container(
-                  padding: EdgeInsets.all(compactLayout ? 14.w : 18.w),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onOpen,
                     borderRadius: BorderRadius.circular(22.r),
-                    border: Border.all(color: const Color(0xFFEAECF0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF101828).withValues(alpha: 0.04),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 10.w,
-                            height: compactLayout ? 40.h : 46.h,
-                            decoration: BoxDecoration(
-                              color: accentColor,
-                              borderRadius: BorderRadius.circular(999.r),
-                            ),
+                    child: Container(
+                      padding: EdgeInsets.all(compactLayout ? 14.w : 18.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(22.r),
+                        border: Border.all(color: const Color(0xFFEAECF0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(
+                              0xFF101828,
+                            ).withValues(alpha: 0.04),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
                           ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 2.h),
-                              child: AppText.title(
-                                task.title,
-                                style: Theme.of(context).textTheme.titleLarge
-                                    ?.copyWith(
-                                      decoration: task.isCompleted
-                                          ? TextDecoration.lineThrough
-                                          : null,
-                                      fontSize: compactLayout ? 18.sp : null,
-                                    ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          isToggling
-                              ? SizedBox(
-                                  width: compactLayout ? 36.w : 40.w,
-                                  height: compactLayout ? 36.w : 40.w,
-                                  child: Center(
-                                    child: SizedBox(
-                                      width: 20.w,
-                                      height: 20.w,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: accentColor,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : Checkbox(
-                                  value: task.isCompleted,
-                                  visualDensity: compactLayout
-                                      ? VisualDensity.compact
-                                      : VisualDensity.standard,
-                                  onChanged: (value) =>
-                                      onToggle(value ?? false),
-                                  activeColor: accentColor,
-                                ),
                         ],
                       ),
-                      if (task.description.trim().isNotEmpty) ...[
-                        SizedBox(height: 6.h),
-                        Padding(
-                          padding: EdgeInsets.only(left: 22.w),
-                          child: AppText(
-                            task.description,
-                            maxLines: compactLayout ? 3 : null,
-                            overflow: compactLayout
-                                ? TextOverflow.ellipsis
-                                : null,
-                          ),
-                        ),
-                      ],
-                      SizedBox(height: 14.h),
-                      Wrap(
-                        runSpacing: 10.h,
-                        spacing: 10.w,
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _InfoPill(
-                            label: task.isCompleted
-                                ? 'Completed'
-                                : 'In progress',
-                            color: accentColor,
-                            icon: task.isCompleted
-                                ? Icons.check_circle_rounded
-                                : Icons.radio_button_checked_rounded,
-                          ),
-                          _InfoPill(
-                            label: 'Updated $formatter',
-                            color: const Color(0xFF111827),
-                            icon: Icons.schedule_rounded,
-                            subtle: true,
-                          ),
-                          Wrap(
-                            spacing: 8.w,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _ActionButton(
-                                icon: Icons.edit_outlined,
-                                onTap: onEdit,
+                              Container(
+                                width: 10.w,
+                                height: compactLayout ? 40.h : 46.h,
+                                decoration: BoxDecoration(
+                                  color: accentColor,
+                                  borderRadius: BorderRadius.circular(999.r),
+                                ),
                               ),
-                              _ActionButton(
-                                icon: Icons.delete_outline_rounded,
-                                onTap: onDelete,
-                                destructive: true,
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 2.h),
+                                  child: AppText.title(
+                                    task.title,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                          decoration: task.isCompleted
+                                              ? TextDecoration.lineThrough
+                                              : null,
+                                          fontSize: compactLayout
+                                              ? 18.sp
+                                              : null,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              isToggling
+                                  ? SizedBox(
+                                      width: compactLayout ? 36.w : 40.w,
+                                      height: compactLayout ? 36.w : 40.w,
+                                      child: Center(
+                                        child: SizedBox(
+                                          width: 20.w,
+                                          height: 20.w,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: accentColor,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : Checkbox(
+                                      value: task.isCompleted,
+                                      visualDensity: compactLayout
+                                          ? VisualDensity.compact
+                                          : VisualDensity.standard,
+                                      onChanged: (value) =>
+                                          onToggle(value ?? false),
+                                      activeColor: accentColor,
+                                    ),
+                            ],
+                          ),
+                          if (task.description.trim().isNotEmpty) ...[
+                            SizedBox(height: 6.h),
+                            Padding(
+                              padding: EdgeInsets.only(left: 22.w),
+                              child: AppText(
+                                task.description,
+                                maxLines: compactLayout ? 3 : null,
+                                overflow: compactLayout
+                                    ? TextOverflow.ellipsis
+                                    : null,
+                              ),
+                            ),
+                          ],
+                          SizedBox(height: 14.h),
+                          Wrap(
+                            runSpacing: 10.h,
+                            spacing: 10.w,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              _InfoPill(
+                                label: task.isCompleted
+                                    ? 'Completed'
+                                    : 'In progress',
+                                color: accentColor,
+                                icon: task.isCompleted
+                                    ? Icons.check_circle_rounded
+                                    : Icons.radio_button_checked_rounded,
+                              ),
+                              _InfoPill(
+                                label: 'Created $createdDate, $createdTime',
+                                color: const Color(0xFF111827),
+                                icon: Icons.event_note_rounded,
+                                subtle: true,
+                              ),
+                              _InfoPill(
+                                label: 'Updated $updatedFormatter',
+                                color: const Color(0xFF111827),
+                                icon: Icons.schedule_rounded,
+                                subtle: true,
+                              ),
+                              Wrap(
+                                spacing: 8.w,
+                                children: [
+                                  _ActionButton(
+                                    icon: Icons.edit_outlined,
+                                    onTap: onEdit,
+                                  ),
+                                  _ActionButton(
+                                    icon: Icons.delete_outline_rounded,
+                                    onTap: onDelete,
+                                    destructive: true,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),

@@ -7,6 +7,7 @@ import '../../../../../core/widgets/app_text.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../../blocs/task/task_bloc.dart';
 import '../../screens/settings_screen.dart';
+import '../../screens/task_details_screen.dart';
 import 'task_editor_sheet.dart';
 import 'task_header.dart';
 import 'task_list_section.dart';
@@ -92,6 +93,7 @@ class _TaskDashboardViewState extends State<TaskDashboardView> {
                   context.read<TaskBloc>().add(TaskDeleted(taskId));
                 },
                 onEdit: (task) => _openEditor(context, task: task),
+                onOpen: (task) => _openTaskDetails(context, task),
                 onToggle: (task, value) {
                   context.read<TaskBloc>().add(
                     TaskCompletionToggled(taskId: task.id, isCompleted: value),
@@ -124,6 +126,12 @@ class _TaskDashboardViewState extends State<TaskDashboardView> {
       MaterialPageRoute<void>(
         builder: (_) => SettingsScreen(onLogout: widget.onLogout),
       ),
+    );
+  }
+
+  Future<void> _openTaskDetails(BuildContext context, TaskEntity task) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => TaskDetailsScreen(task: task)),
     );
   }
 }
@@ -188,6 +196,7 @@ class _TasksTabView extends StatelessWidget {
     required this.onCreate,
     required this.onDelete,
     required this.onEdit,
+    required this.onOpen,
     required this.onToggle,
   });
 
@@ -201,6 +210,7 @@ class _TasksTabView extends StatelessWidget {
   final VoidCallback onCreate;
   final ValueChanged<String> onDelete;
   final ValueChanged<TaskEntity> onEdit;
+  final ValueChanged<TaskEntity> onOpen;
   final void Function(TaskEntity task, bool value) onToggle;
 
   @override
@@ -244,6 +254,7 @@ class _TasksTabView extends StatelessWidget {
                       onCreate: onCreate,
                       onDelete: onDelete,
                       onEdit: onEdit,
+                      onOpen: onOpen,
                       onToggle: onToggle,
                     ),
                   ),

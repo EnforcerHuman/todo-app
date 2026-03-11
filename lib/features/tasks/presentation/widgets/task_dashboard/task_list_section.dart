@@ -20,6 +20,7 @@ class TaskListSection extends StatefulWidget {
     required this.onCreate,
     required this.onDelete,
     required this.onEdit,
+    required this.onOpen,
     required this.onToggle,
     super.key,
   });
@@ -34,6 +35,7 @@ class TaskListSection extends StatefulWidget {
   final VoidCallback onCreate;
   final ValueChanged<String> onDelete;
   final ValueChanged<TaskEntity> onEdit;
+  final ValueChanged<TaskEntity> onOpen;
   final void Function(TaskEntity task, bool value) onToggle;
 
   @override
@@ -82,6 +84,7 @@ class _TaskListSectionState extends State<TaskListSection> {
               activeTaskId: widget.activeTaskId,
               onDelete: widget.onDelete,
               onEdit: widget.onEdit,
+              onOpen: widget.onOpen,
               onToggle: widget.onToggle,
             ),
           ),
@@ -179,6 +182,7 @@ class _TaskListContent extends StatelessWidget {
     required this.activeTaskId,
     required this.onDelete,
     required this.onEdit,
+    required this.onOpen,
     required this.onToggle,
   });
 
@@ -190,6 +194,7 @@ class _TaskListContent extends StatelessWidget {
   final String? activeTaskId;
   final ValueChanged<String> onDelete;
   final ValueChanged<TaskEntity> onEdit;
+  final ValueChanged<TaskEntity> onOpen;
   final void Function(TaskEntity task, bool value) onToggle;
 
   @override
@@ -208,11 +213,20 @@ class _TaskListContent extends StatelessWidget {
       );
     }
 
-    return SliverList.separated(
-      itemCount: filteredTasks.length,
-      separatorBuilder: (context, index) => SizedBox(height: 12.h),
-      itemBuilder: (context, index) {
-        final task = filteredTasks[index];
+    final sectionItems = _buildSectionItems(filteredTasks);
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final item = sectionItems[index];
+
+        if (item is _TaskSectionHeaderItem) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: 12.h, top: index == 0 ? 0 : 12.h),
+            child: AppText.title(item.label, fontSize: 18.sp),
+          );
+        }
+
+        final task = (item as _TaskSectionTaskItem).task;
         final isProcessingTask =
             isSubmitting &&
             activeTaskId == task.id &&
@@ -222,17 +236,74 @@ class _TaskListContent extends StatelessWidget {
             isSubmitting &&
             activeTaskId == task.id &&
             activeMutation == TaskMutationType.toggle;
-        return TaskTile(
-          task: task,
-          isProcessing: isProcessingTask,
-          isToggling: isTogglingTask,
-          onDelete: () => onDelete(task.id),
-          onEdit: () => onEdit(task),
-          onToggle: (value) => onToggle(task, value),
+
+        return Padding(
+          padding: EdgeInsets.only(bottom: 12.h),
+          child: TaskTile(
+            task: task,
+            isProcessing: isProcessingTask,
+            isToggling: isTogglingTask,
+            onOpen: () => onOpen(task),
+            onDelete: () => onDelete(task.id),
+            onEdit: () => onEdit(task),
+            onToggle: (value) => onToggle(task, value),
+          ),
         );
-      },
+      }, childCount: sectionItems.length),
     );
   }
+
+  List<_TaskSectionItem> _buildSectionItems(List<TaskEntity> tasks) {
+    final now = DateTime.now();
+    final todayTasks = <TaskEntity>[];
+    final previousTasks = <TaskEntity>[];
+
+    for (final task in tasks) {
+      if (_isSameDay(task.createdAt, now)) {
+        todayTasks.add(task);
+      } else {
+        previousTasks.add(task);
+      }
+    }
+
+    final items = <_TaskSectionItem>[];
+
+    if (todayTasks.isNotEmpty) {
+      items
+        ..add(const _TaskSectionHeaderItem('Today'))
+        ..addAll(todayTasks.map(_TaskSectionTaskItem.new));
+    }
+
+    if (previousTasks.isNotEmpty) {
+      items
+        ..add(const _TaskSectionHeaderItem('Previous'))
+        ..addAll(previousTasks.map(_TaskSectionTaskItem.new));
+    }
+
+    return items;
+  }
+
+  bool _isSameDay(DateTime left, DateTime right) {
+    return left.year == right.year &&
+        left.month == right.month &&
+        left.day == right.day;
+  }
+}
+
+sealed class _TaskSectionItem {
+  const _TaskSectionItem();
+}
+
+class _TaskSectionHeaderItem extends _TaskSectionItem {
+  const _TaskSectionHeaderItem(this.label);
+
+  final String label;
+}
+
+class _TaskSectionTaskItem extends _TaskSectionItem {
+  const _TaskSectionTaskItem(this.task);
+
+  final TaskEntity task;
 }
 
 enum _TaskFilter { all, active, completed }
