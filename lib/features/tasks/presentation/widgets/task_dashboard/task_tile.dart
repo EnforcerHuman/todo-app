@@ -8,6 +8,7 @@ class TaskTile extends StatelessWidget {
   const TaskTile({
     required this.task,
     this.isProcessing = false,
+    this.isToggling = false,
     required this.onDelete,
     required this.onEdit,
     required this.onToggle,
@@ -16,6 +17,7 @@ class TaskTile extends StatelessWidget {
 
   final TaskEntity task;
   final bool isProcessing;
+  final bool isToggling;
   final VoidCallback onDelete;
   final VoidCallback onEdit;
   final ValueChanged<bool> onToggle;
@@ -31,10 +33,12 @@ class TaskTile extends StatelessWidget {
       builder: (context, constraints) {
         final compactLayout = constraints.maxWidth < 460;
 
+        final isBusy = isProcessing || isToggling;
+
         return Stack(
           children: [
             AbsorbPointer(
-              absorbing: isProcessing,
+              absorbing: isBusy,
               child: Opacity(
                 opacity: isProcessing ? 0.45 : 1,
                 child: Container(
@@ -82,14 +86,30 @@ class TaskTile extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: 8.w),
-                          Checkbox(
-                            value: task.isCompleted,
-                            visualDensity: compactLayout
-                                ? VisualDensity.compact
-                                : VisualDensity.standard,
-                            onChanged: (value) => onToggle(value ?? false),
-                            activeColor: accentColor,
-                          ),
+                          isToggling
+                              ? SizedBox(
+                                  width: compactLayout ? 36.w : 40.w,
+                                  height: compactLayout ? 36.w : 40.w,
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 20.w,
+                                      height: 20.w,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: accentColor,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Checkbox(
+                                  value: task.isCompleted,
+                                  visualDensity: compactLayout
+                                      ? VisualDensity.compact
+                                      : VisualDensity.standard,
+                                  onChanged: (value) =>
+                                      onToggle(value ?? false),
+                                  activeColor: accentColor,
+                                ),
                         ],
                       ),
                       if (task.description.trim().isNotEmpty) ...[

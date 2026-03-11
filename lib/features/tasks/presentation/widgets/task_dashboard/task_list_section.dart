@@ -218,9 +218,14 @@ class _TaskListContent extends StatelessWidget {
             activeTaskId == task.id &&
             (activeMutation == TaskMutationType.update ||
                 activeMutation == TaskMutationType.delete);
+        final isTogglingTask =
+            isSubmitting &&
+            activeTaskId == task.id &&
+            activeMutation == TaskMutationType.toggle;
         return TaskTile(
           task: task,
           isProcessing: isProcessingTask,
+          isToggling: isTogglingTask,
           onDelete: () => onDelete(task.id),
           onEdit: () => onEdit(task),
           onToggle: (value) => onToggle(task, value),
