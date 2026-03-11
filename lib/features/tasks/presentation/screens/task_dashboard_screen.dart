@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/widgets/app_text.dart';
 import '../../../auth/presentation/blocs/auth/auth_bloc.dart';
 import '../blocs/task/task_bloc.dart';
 import '../widgets/task_dashboard/task_dashboard_view.dart';
@@ -31,7 +32,7 @@ class _TaskDashboardScreenState extends State<TaskDashboardScreen> {
 
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(message)));
+          ..showSnackBar(SnackBar(content: AppText(message)));
       },
       child: TaskDashboardView(
         onLogout: () {

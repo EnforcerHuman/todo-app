@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_text.dart';
 import '../../blocs/auth_form/auth_form_bloc.dart';
 
 class AuthHeroPanel extends StatelessWidget {
@@ -30,16 +31,14 @@ class AuthHeroPanel extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(999.r),
             ),
-            child: const Text(
+            child: const AppText(
               'Clean Architecture + BLoC',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
             ),
           ),
           SizedBox(height: 48.h),
-          Text(
+          AppText(
             mode == AuthFormMode.signIn
                 ? 'Plan tasks with a faster daily flow.'
                 : 'Create an account and start managing tasks.',
@@ -49,12 +48,10 @@ class AuthHeroPanel extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16.h),
-          Text(
+          AppText.large(
             'Authentication is powered by Firebase Auth. '
             'Tasks are stored in Firebase Realtime Database through REST calls.',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white.withValues(alpha: 0.88),
-            ),
+            color: Colors.white.withValues(alpha: 0.88),
           ),
           SizedBox(height: 32.h),
           Wrap(
@@ -86,13 +83,11 @@ class _HighlightChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(999.r),
         border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
       ),
-      child: Text(
+      child: AppText(
         label,
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-          fontSize: 13.sp,
-        ),
+        color: Colors.white,
+        fontWeight: FontWeight.w600,
+        fontSize: 13.sp,
       ),
     );
   }

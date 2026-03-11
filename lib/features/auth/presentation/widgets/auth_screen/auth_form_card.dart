@@ -385,18 +385,16 @@ class _AuthModeButton extends StatelessWidget {
               ),
               SizedBox(width: 6.w),
               Flexible(
-                child: Text(
+                child: AppText(
                   label,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: foreground,
-                    fontSize: ultraDense
-                        ? 12.sp
-                        : dense
-                        ? 13.sp
-                        : 14.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  color: foreground,
+                  fontSize: ultraDense
+                      ? 12.sp
+                      : dense
+                      ? 13.sp
+                      : 14.sp,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],

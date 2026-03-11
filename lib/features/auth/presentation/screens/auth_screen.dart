@@ -24,7 +24,7 @@ class _AuthScreenState extends State<AuthScreen> {
         if (state.status == AuthFormStatus.failure && state.message != null) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(content: Text(state.message!)));
+            ..showSnackBar(SnackBar(content: AppText(state.message!)));
         }
       },
       child: Scaffold(

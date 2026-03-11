@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_text.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../common/app_section_card.dart';
 
@@ -29,12 +30,11 @@ class TaskOverviewPanel extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 14.h,
             children: [
-              Text('Analyze', style: Theme.of(context).textTheme.titleLarge),
-              Text(
+              const AppText.title('Analyze'),
+              AppText.medium(
                 active == 0
                     ? 'Everything is completed. This is a good moment to plan what comes next.'
                     : '$active ${active == 1 ? 'task remains' : 'tasks remain'} open. Clearing even one will make the list feel lighter.',
-                style: Theme.of(context).textTheme.bodyMedium,
               ),
               Container(
                 width: double.infinity,
@@ -64,13 +64,11 @@ class TaskOverviewPanel extends StatelessWidget {
                     ),
                     SizedBox(width: 12.w),
                     Expanded(
-                      child: Text(
+                      child: AppText.large(
                         active == 0
                             ? 'Strong finish. Keep the next set of tasks short and intentional.'
                             : 'Best next move: finish one active task before adding a new one.',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: const Color(0xFF111827),
-                        ),
+                        color: const Color(0xFF111827),
                       ),
                     ),
                   ],
@@ -95,14 +93,10 @@ class TaskOverviewPanel extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Overview',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+                  const AppText.title('Overview'),
                   SizedBox(height: 6.h),
-                  Text(
+                  const AppText.medium(
                     'A compact snapshot of what is done and what still needs attention.',
-                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   SizedBox(height: 14.h),
                   Wrap(
@@ -146,16 +140,11 @@ class TaskOverviewPanel extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              'Completion rate',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
+                            const AppText.medium('Completion rate'),
                             const Spacer(),
-                            Text(
+                            AppText.title(
                               '${(completionRate * 100).round()}%',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.titleLarge?.copyWith(fontSize: 18.sp),
+                              fontSize: 18.sp,
                             ),
                           ],
                         ),
@@ -209,15 +198,8 @@ class _OverviewMetricCard extends StatelessWidget {
         children: [
           CircleAvatar(backgroundColor: color, radius: 6.r),
           SizedBox(width: 10.w),
-          Expanded(
-            child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
-          ),
-          Text(
-            value,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontSize: 18.sp),
-          ),
+          Expanded(child: AppText.medium(label)),
+          AppText.title(value, fontSize: 18.sp),
         ],
       ),
     );

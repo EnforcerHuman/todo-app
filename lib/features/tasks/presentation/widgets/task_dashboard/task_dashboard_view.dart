@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_text.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../../blocs/task/task_bloc.dart';
 import '../../screens/settings_screen.dart';
@@ -32,7 +33,7 @@ class _TaskDashboardViewState extends State<TaskDashboardView> {
           ? FloatingActionButton.extended(
               onPressed: () => _openEditor(context),
               icon: const Icon(Icons.add_task_rounded),
-              label: const Text('Add task'),
+              label: const AppText('Add task'),
             )
           : null,
       bottomNavigationBar: NavigationBar(
@@ -208,14 +209,13 @@ class _TasksTabView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  AppText(
                     'Tasks',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   SizedBox(height: 6.h),
-                  Text(
+                  const AppText.medium(
                     'Plan, update, and complete everything from one focused list.',
-                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   SizedBox(height: 16.h),
                   Expanded(

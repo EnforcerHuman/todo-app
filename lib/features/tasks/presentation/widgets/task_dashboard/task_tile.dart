@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_text.dart';
 import '../../../domain/entities/task_entity.dart';
 
 class TaskTile extends StatelessWidget {
@@ -60,7 +61,7 @@ class TaskTile extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.only(top: 2.h),
-                      child: Text(
+                      child: AppText.title(
                         task.title,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           decoration: task.isCompleted
@@ -86,7 +87,7 @@ class TaskTile extends StatelessWidget {
                 SizedBox(height: 6.h),
                 Padding(
                   padding: EdgeInsets.only(left: 22.w),
-                  child: Text(
+                  child: AppText(
                     task.description,
                     maxLines: compactLayout ? 3 : null,
                     overflow: compactLayout ? TextOverflow.ellipsis : null,
@@ -159,13 +160,11 @@ class _InfoPill extends StatelessWidget {
         children: [
           Icon(icon, size: 16.sp, color: color),
           SizedBox(width: 8.w),
-          Text(
+          AppText(
             label,
-            style: TextStyle(
-              color: color,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w600,
-            ),
+            color: color,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
           ),
         ],
       ),

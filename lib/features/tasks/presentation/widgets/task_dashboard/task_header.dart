@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_text.dart';
 import '../../../../auth/presentation/blocs/auth/auth_bloc.dart';
 import '../../../domain/entities/task_entity.dart';
 
@@ -73,14 +74,12 @@ class TaskHeader extends StatelessWidget {
                       size: 16.sp,
                     ),
                     SizedBox(width: 8.w),
-                    Text(
+                    AppText(
                       active == 0 ? 'All caught up' : '$active active today',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.2,
-                      ),
+                      color: Colors.white,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      style: const TextStyle(letterSpacing: 0.2),
                     ),
                   ],
                 ),
@@ -111,7 +110,7 @@ class TaskHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                AppText(
                   'Hello, $name',
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     color: Colors.white,
@@ -121,24 +120,20 @@ class TaskHeader extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10.h),
-                Text(
+                AppText.large(
                   subtitle,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.84),
-                    fontSize: isCompact ? 14.sp : 15.sp,
-                    height: 1.45,
-                  ),
+                  color: Colors.white.withValues(alpha: 0.84),
+                  fontSize: isCompact ? 14.sp : 15.sp,
+                  style: const TextStyle(height: 1.45),
                 ),
               ],
             ),
           ),
           SizedBox(height: 10.h),
-          Text(
+          AppText.medium(
             user?.email ?? '',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.64),
-              letterSpacing: 0.2,
-            ),
+            color: Colors.white.withValues(alpha: 0.64),
+            style: const TextStyle(letterSpacing: 0.2),
           ),
         ],
       ),

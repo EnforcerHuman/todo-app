@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_text.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../common/app_section_card.dart';
 import 'task_tile.dart';
@@ -115,14 +116,10 @@ class _TaskListHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Today\'s list',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+                  const AppText.title('Today\'s list'),
                   SizedBox(height: 6.h),
-                  Text(
+                  const AppText.medium(
                     'Keep the list short, clear, and easy to finish.',
-                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
               ),
@@ -258,13 +255,11 @@ class _FilterChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            AppText(
               label,
-              style: TextStyle(
-                color: foreground,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
-              ),
+              color: foreground,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w600,
             ),
             SizedBox(width: 8.w),
             Container(
@@ -275,13 +270,11 @@ class _FilterChip extends StatelessWidget {
                     : Colors.white,
                 borderRadius: BorderRadius.circular(999.r),
               ),
-              child: Text(
+              child: AppText(
                 '$count',
-                style: TextStyle(
-                  color: foreground,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                color: foreground,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ],
@@ -304,11 +297,14 @@ class _EmptyState extends StatelessWidget {
         children: [
           Icon(Icons.task_alt_rounded, size: 54.sp),
           SizedBox(height: 16.h),
-          Text('No tasks yet', style: Theme.of(context).textTheme.titleLarge),
+          const AppText.title('No tasks yet'),
           SizedBox(height: 8.h),
-          const Text('Add your first task to start tracking work.'),
+          const AppText('Add your first task to start tracking work.'),
           SizedBox(height: 16.h),
-          ElevatedButton(onPressed: onCreate, child: const Text('Create task')),
+          ElevatedButton(
+            onPressed: onCreate,
+            child: const AppText('Create task'),
+          ),
         ],
       ),
     );

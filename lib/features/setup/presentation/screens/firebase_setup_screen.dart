@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/widgets/app_text.dart';
+
 class FirebaseSetupScreen extends StatelessWidget {
   const FirebaseSetupScreen({required this.error, super.key});
 
@@ -22,11 +24,11 @@ class FirebaseSetupScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 16.h,
                   children: [
-                    Text(
+                    AppText(
                       'Firebase setup required',
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                    const Text(
+                    const AppText(
                       'Run `flutterfire configure` and replace the generated '
                       '`lib/firebase_options.dart`. This app expects Firebase '
                       'Authentication and Firebase Realtime Database to be '
