@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/widgets/app_text.dart';
 import '../blocs/auth_form/auth_form_bloc.dart';
 import '../widgets/auth_screen/auth_form_card.dart';
 
@@ -189,17 +190,15 @@ class _AuthIntroPanel extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(999.r),
                 ),
-                child: Text(
+                child: AppText(
                   isSignUp ? 'Create your account' : 'Welcome back',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: ultraTight
-                        ? 10.sp
-                        : veryTight
-                        ? 11.sp
-                        : 12.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  color: Colors.white,
+                  fontSize: ultraTight
+                      ? 10.sp
+                      : veryTight
+                      ? 11.sp
+                      : 12.sp,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               SizedBox(
@@ -211,7 +210,7 @@ class _AuthIntroPanel extends StatelessWidget {
                     ? 12.h
                     : 22.h,
               ),
-              Text(
+              AppText(
                 isSignUp
                     ? 'Start organizing work with a clean and focused task flow.'
                     : 'Sign in to continue where you left off.',
@@ -243,18 +242,16 @@ class _AuthIntroPanel extends StatelessWidget {
                       ? 8.h
                       : 12.h,
                 ),
-                Text(
+                AppText.large(
                   'Fast authentication, responsive layouts, and a clearer daily task rhythm.',
                   maxLines: veryTight ? 1 : 2,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.84),
-                    fontSize: veryTight
-                        ? 12.sp
-                        : resolvedCompact
-                        ? 13.sp
-                        : null,
-                  ),
+                  color: Colors.white.withValues(alpha: 0.84),
+                  fontSize: veryTight
+                      ? 12.sp
+                      : resolvedCompact
+                      ? 13.sp
+                      : null,
                 ),
               ],
               if (showChips) ...[
@@ -291,13 +288,11 @@ class _IntroChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(999.r),
         border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
       ),
-      child: Text(
+      child: AppText(
         label,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w600,
-        ),
+        color: Colors.white,
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w600,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_text.dart';
 import '../../../../../core/utils/input_validators.dart';
 import '../../../../../core/widgets/app_text_field.dart';
 import '../../blocs/auth_form/auth_form_bloc.dart';
@@ -119,30 +120,24 @@ class _AuthFormCardState extends State<AuthFormCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (!adaptiveUltraDense)
-                          Text(
+                          AppText.title(
                             'Task Flow',
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  fontSize: adaptiveDense ? 18.sp : null,
-                                ),
+                            fontSize: adaptiveDense ? 18.sp : null,
                           ),
                         if (!adaptiveUltraDense)
                           SizedBox(height: adaptiveDense ? 4.h : 10.h),
-                        Text(
+                        AppText(
                           isSignUp ? 'Create account' : 'Sign in',
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(fontSize: headerFontSize),
+                          style: Theme.of(context).textTheme.headlineSmall,
+                          fontSize: headerFontSize,
                         ),
                         SizedBox(height: 4.h),
                         if (!adaptiveUltraDense)
-                          Text(
+                          AppText.medium(
                             isSignUp
                                 ? 'Create your workspace with email and password.'
                                 : 'Use your email and password to continue.',
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  fontSize: adaptiveDense ? 13.sp : null,
-                                ),
+                            fontSize: adaptiveDense ? 13.sp : null,
                           ),
                         SizedBox(height: sectionGap),
                         _AuthModeSelector(
@@ -214,7 +209,9 @@ class _AuthFormCardState extends State<AuthFormCard> {
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : Text(isSignUp ? 'Create account' : 'Sign in'),
+                                : AppText(
+                                    isSignUp ? 'Create account' : 'Sign in',
+                                  ),
                           ),
                         ),
                         SizedBox(
@@ -240,14 +237,12 @@ class _AuthFormCardState extends State<AuthFormCard> {
                                     : AuthFormMode.signUp,
                               );
                             },
-                            child: Text(
+                            child: AppText(
                               isSignUp
                                   ? 'Already have an account? Sign in'
                                   : 'Don\'t have an account? Sign up',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: adaptiveUltraDense ? 12.sp : 13.sp,
-                              ),
+                              fontSize: adaptiveUltraDense ? 12.sp : 13.sp,
                             ),
                           ),
                         ),

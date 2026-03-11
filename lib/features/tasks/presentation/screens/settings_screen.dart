@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/widgets/app_text.dart';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({required this.onLogout, super.key});
 
@@ -9,7 +11,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: const AppText.title('Settings')),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -29,15 +31,9 @@ class SettingsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Account',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
+                        AppText.title('Account'),
                         SizedBox(height: 8.h),
-                        Text(
-                          'Manage your session from here.',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
+                        const AppText.medium('Manage your session from here.'),
                         SizedBox(height: 20.h),
                         SizedBox(
                           width: double.infinity,
@@ -47,7 +43,7 @@ class SettingsScreen extends StatelessWidget {
                               onLogout();
                             },
                             icon: const Icon(Icons.logout_rounded),
-                            label: const Text('Logout'),
+                            label: const AppText('Logout'),
                           ),
                         ),
                       ],
