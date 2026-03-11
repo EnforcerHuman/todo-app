@@ -111,150 +111,153 @@ class _AuthFormCardState extends State<AuthFormCard> {
               builder: (context, state) {
                 return Form(
                   key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (!adaptiveUltraDense)
+                  child: SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (!adaptiveUltraDense)
+                          Text(
+                            'Task Flow',
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontSize: adaptiveDense ? 18.sp : null,
+                                ),
+                          ),
+                        if (!adaptiveUltraDense)
+                          SizedBox(height: adaptiveDense ? 4.h : 10.h),
                         Text(
-                          'Task Flow',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(
-                                fontSize: adaptiveDense ? 18.sp : null,
-                              ),
+                          isSignUp ? 'Create account' : 'Sign in',
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(fontSize: headerFontSize),
                         ),
-                      if (!adaptiveUltraDense)
-                        SizedBox(height: adaptiveDense ? 4.h : 10.h),
-                      Text(
-                        isSignUp ? 'Create account' : 'Sign in',
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(fontSize: headerFontSize),
-                      ),
-                      SizedBox(height: 4.h),
-                      if (!adaptiveUltraDense)
-                        Text(
-                          isSignUp
-                              ? 'Create your workspace with email and password.'
-                              : 'Use your email and password to continue.',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                fontSize: adaptiveDense ? 13.sp : null,
-                              ),
+                        SizedBox(height: 4.h),
+                        if (!adaptiveUltraDense)
+                          Text(
+                            isSignUp
+                                ? 'Create your workspace with email and password.'
+                                : 'Use your email and password to continue.',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  fontSize: adaptiveDense ? 13.sp : null,
+                                ),
+                          ),
+                        SizedBox(height: sectionGap),
+                        _AuthModeSelector(
+                          mode: widget.mode,
+                          onModeChanged: widget.onModeChanged,
+                          dense: adaptiveDense,
+                          ultraDense: adaptiveUltraDense,
                         ),
-                      SizedBox(height: sectionGap),
-                      _AuthModeSelector(
-                        mode: widget.mode,
-                        onModeChanged: widget.onModeChanged,
-                        dense: adaptiveDense,
-                        ultraDense: adaptiveUltraDense,
-                      ),
-                      SizedBox(height: sectionGap),
-                      if (isSignUp) ...[
+                        SizedBox(height: sectionGap),
+                        if (isSignUp) ...[
+                          TextFormField(
+                            controller: _nameController,
+                            textInputAction: TextInputAction.next,
+                            style: TextStyle(
+                              fontSize: adaptiveDense ? 14.sp : 15.sp,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Full name',
+                              isDense: adaptiveDense,
+                              contentPadding: fieldContentPadding,
+                            ),
+                            validator: (value) =>
+                                value == null || value.trim().isEmpty
+                                ? 'Name is required.'
+                                : null,
+                          ),
+                          SizedBox(height: fieldGap),
+                        ],
                         TextFormField(
-                          controller: _nameController,
+                          controller: _emailController,
                           textInputAction: TextInputAction.next,
                           style: TextStyle(
                             fontSize: adaptiveDense ? 14.sp : 15.sp,
                           ),
                           decoration: InputDecoration(
-                            labelText: 'Full name',
+                            labelText: 'Email',
                             isDense: adaptiveDense,
                             contentPadding: fieldContentPadding,
                           ),
+                          keyboardType: TextInputType.emailAddress,
                           validator: (value) =>
-                              value == null || value.trim().isEmpty
-                              ? 'Name is required.'
-                              : null,
+                              InputValidators.email(value ?? ''),
                         ),
                         SizedBox(height: fieldGap),
-                      ],
-                      TextFormField(
-                        controller: _emailController,
-                        textInputAction: TextInputAction.next,
-                        style: TextStyle(
-                          fontSize: adaptiveDense ? 14.sp : 15.sp,
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          isDense: adaptiveDense,
-                          contentPadding: fieldContentPadding,
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) =>
-                            InputValidators.email(value ?? ''),
-                      ),
-                      SizedBox(height: fieldGap),
-                      TextFormField(
-                        controller: _passwordController,
-                        textInputAction: TextInputAction.done,
-                        style: TextStyle(
-                          fontSize: adaptiveDense ? 14.sp : 15.sp,
-                        ),
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          isDense: adaptiveDense,
-                          contentPadding: fieldContentPadding,
-                        ),
-                        obscureText: true,
-                        validator: (value) =>
-                            InputValidators.password(value ?? ''),
-                      ),
-                      const Spacer(),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size.fromHeight(buttonHeight),
+                        TextFormField(
+                          controller: _passwordController,
+                          textInputAction: TextInputAction.done,
+                          style: TextStyle(
+                            fontSize: adaptiveDense ? 14.sp : 15.sp,
                           ),
-                          onPressed: state.status == AuthFormStatus.submitting
-                              ? null
-                              : _submit,
-                          child: state.status == AuthFormStatus.submitting
-                              ? SizedBox(
-                                  height: 20.w,
-                                  width: 20.w,
-                                  child: const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : Text(isSignUp ? 'Create account' : 'Sign in'),
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            isDense: adaptiveDense,
+                            contentPadding: fieldContentPadding,
+                          ),
+                          obscureText: true,
+                          validator: (value) =>
+                              InputValidators.password(value ?? ''),
                         ),
-                      ),
-                      SizedBox(
-                        height: adaptiveUltraDense
-                            ? 2.h
-                            : adaptiveDense
-                            ? 6.h
-                            : 10.h,
-                      ),
-                      Center(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: adaptiveUltraDense ? 4.h : 8.h,
+                        SizedBox(height: sectionGap),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size.fromHeight(buttonHeight),
                             ),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            onPressed: state.status == AuthFormStatus.submitting
+                                ? null
+                                : _submit,
+                            child: state.status == AuthFormStatus.submitting
+                                ? SizedBox(
+                                    height: 20.w,
+                                    width: 20.w,
+                                    child: const CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : Text(isSignUp ? 'Create account' : 'Sign in'),
                           ),
-                          onPressed: () {
-                            widget.onModeChanged(
+                        ),
+                        SizedBox(
+                          height: adaptiveUltraDense
+                              ? 2.h
+                              : adaptiveDense
+                              ? 6.h
+                              : 10.h,
+                        ),
+                        Center(
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: adaptiveUltraDense ? 4.h : 8.h,
+                              ),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            onPressed: () {
+                              widget.onModeChanged(
+                                isSignUp
+                                    ? AuthFormMode.signIn
+                                    : AuthFormMode.signUp,
+                              );
+                            },
+                            child: Text(
                               isSignUp
-                                  ? AuthFormMode.signIn
-                                  : AuthFormMode.signUp,
-                            );
-                          },
-                          child: Text(
-                            isSignUp
-                                ? 'Already have an account? Sign in'
-                                : 'Don\'t have an account? Sign up',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: adaptiveUltraDense ? 12.sp : 13.sp,
+                                  ? 'Already have an account? Sign in'
+                                  : 'Don\'t have an account? Sign up',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: adaptiveUltraDense ? 12.sp : 13.sp,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
