@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_text.dart';
 import '../../../../../core/utils/input_validators.dart';
 import '../../../../../core/widgets/app_text_field.dart';
@@ -192,28 +193,21 @@ class _AuthFormCardState extends State<AuthFormCard> {
                               InputValidators.password(value ?? ''),
                         ),
                         SizedBox(height: sectionGap),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(buttonHeight),
-                            ),
-                            onPressed: state.status == AuthFormStatus.submitting
-                                ? null
-                                : _submit,
-                            child: state.status == AuthFormStatus.submitting
-                                ? SizedBox(
-                                    height: 20.w,
-                                    width: 20.w,
-                                    child: const CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : AppText(
-                                    isSignUp ? 'Create account' : 'Sign in',
+                        state.status == AuthFormStatus.submitting
+                            ? SizedBox(
+                                width: double.infinity,
+                                height: buttonHeight,
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
                                   ),
-                          ),
-                        ),
+                                ),
+                              )
+                            : AppButton(
+                                label: isSignUp ? 'Create account' : 'Sign in',
+                                minimumHeight: buttonHeight,
+                                onPressed: _submit,
+                              ),
                         SizedBox(
                           height: adaptiveUltraDense
                               ? 2.h

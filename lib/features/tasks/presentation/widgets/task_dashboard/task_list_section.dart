@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_text.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../common/app_section_card.dart';
@@ -301,9 +302,10 @@ class _EmptyState extends StatelessWidget {
           SizedBox(height: 8.h),
           const AppText('Add your first task to start tracking work.'),
           SizedBox(height: 16.h),
-          ElevatedButton(
+          AppButton(
+            label: 'Create task',
             onPressed: onCreate,
-            child: const AppText('Create task'),
+            isExpanded: false,
           ),
         ],
       ),

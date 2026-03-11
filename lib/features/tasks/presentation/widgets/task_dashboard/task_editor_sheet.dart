@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/utils/input_validators.dart';
+import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_text.dart';
 import '../../../../../core/widgets/app_text_field.dart';
 import '../../../domain/entities/task_entity.dart';
@@ -67,9 +68,9 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                 maxLines: 4,
               ),
               SizedBox(height: 20.h),
-              ElevatedButton(
+              AppButton(
+                label: isEditing ? 'Save changes' : 'Create task',
                 onPressed: _submit,
-                child: AppText(isEditing ? 'Save changes' : 'Create task'),
               ),
             ],
           ),
