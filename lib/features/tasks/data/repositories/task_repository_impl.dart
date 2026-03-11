@@ -25,7 +25,9 @@ class TaskRepositoryImpl implements TaskRepository {
   @override
   Future<List<TaskEntity>> fetchTasks() async {
     final uri = await _buildCollectionUri();
-    final tasks = await _remoteDataSource.fetchTasks(client: _client, uri: uri);
+    final tasks = List<TaskEntity>.from(
+      await _remoteDataSource.fetchTasks(client: _client, uri: uri),
+    );
     tasks.sort((left, right) => right.updatedAt.compareTo(left.updatedAt));
     return tasks;
   }

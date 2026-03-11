@@ -7,6 +7,7 @@ import '../../../domain/entities/task_entity.dart';
 class TaskTile extends StatelessWidget {
   const TaskTile({
     required this.task,
+    this.isProcessing = false,
     required this.onDelete,
     required this.onEdit,
     required this.onToggle,
@@ -14,6 +15,7 @@ class TaskTile extends StatelessWidget {
   });
 
   final TaskEntity task;
+  final bool isProcessing;
   final VoidCallback onDelete;
   final VoidCallback onEdit;
   final ValueChanged<bool> onToggle;
@@ -29,105 +31,127 @@ class TaskTile extends StatelessWidget {
       builder: (context, constraints) {
         final compactLayout = constraints.maxWidth < 460;
 
-        return Container(
-          padding: EdgeInsets.all(compactLayout ? 14.w : 18.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(22.r),
-            border: Border.all(color: const Color(0xFFEAECF0)),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF101828).withValues(alpha: 0.04),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 10.w,
-                    height: compactLayout ? 40.h : 46.h,
-                    decoration: BoxDecoration(
-                      color: accentColor,
-                      borderRadius: BorderRadius.circular(999.r),
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 2.h),
-                      child: AppText.title(
-                        task.title,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          decoration: task.isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
-                          fontSize: compactLayout ? 18.sp : null,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Checkbox(
-                    value: task.isCompleted,
-                    visualDensity: compactLayout
-                        ? VisualDensity.compact
-                        : VisualDensity.standard,
-                    onChanged: (value) => onToggle(value ?? false),
-                    activeColor: accentColor,
-                  ),
-                ],
-              ),
-              if (task.description.trim().isNotEmpty) ...[
-                SizedBox(height: 6.h),
-                Padding(
-                  padding: EdgeInsets.only(left: 22.w),
-                  child: AppText(
-                    task.description,
-                    maxLines: compactLayout ? 3 : null,
-                    overflow: compactLayout ? TextOverflow.ellipsis : null,
-                  ),
-                ),
-              ],
-              SizedBox(height: 14.h),
-              Wrap(
-                runSpacing: 10.h,
-                spacing: 10.w,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  _InfoPill(
-                    label: task.isCompleted ? 'Completed' : 'In progress',
-                    color: accentColor,
-                    icon: task.isCompleted
-                        ? Icons.check_circle_rounded
-                        : Icons.radio_button_checked_rounded,
-                  ),
-                  _InfoPill(
-                    label: 'Updated $formatter',
-                    color: const Color(0xFF111827),
-                    icon: Icons.schedule_rounded,
-                    subtle: true,
-                  ),
-                  Wrap(
-                    spacing: 8.w,
-                    children: [
-                      _ActionButton(icon: Icons.edit_outlined, onTap: onEdit),
-                      _ActionButton(
-                        icon: Icons.delete_outline_rounded,
-                        onTap: onDelete,
-                        destructive: true,
+        return Stack(
+          children: [
+            AbsorbPointer(
+              absorbing: isProcessing,
+              child: Opacity(
+                opacity: isProcessing ? 0.45 : 1,
+                child: Container(
+                  padding: EdgeInsets.all(compactLayout ? 14.w : 18.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(22.r),
+                    border: Border.all(color: const Color(0xFFEAECF0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF101828).withValues(alpha: 0.04),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
                       ),
                     ],
                   ),
-                ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 10.w,
+                            height: compactLayout ? 40.h : 46.h,
+                            decoration: BoxDecoration(
+                              color: accentColor,
+                              borderRadius: BorderRadius.circular(999.r),
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 2.h),
+                              child: AppText.title(
+                                task.title,
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(
+                                      decoration: task.isCompleted
+                                          ? TextDecoration.lineThrough
+                                          : null,
+                                      fontSize: compactLayout ? 18.sp : null,
+                                    ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          Checkbox(
+                            value: task.isCompleted,
+                            visualDensity: compactLayout
+                                ? VisualDensity.compact
+                                : VisualDensity.standard,
+                            onChanged: (value) => onToggle(value ?? false),
+                            activeColor: accentColor,
+                          ),
+                        ],
+                      ),
+                      if (task.description.trim().isNotEmpty) ...[
+                        SizedBox(height: 6.h),
+                        Padding(
+                          padding: EdgeInsets.only(left: 22.w),
+                          child: AppText(
+                            task.description,
+                            maxLines: compactLayout ? 3 : null,
+                            overflow: compactLayout
+                                ? TextOverflow.ellipsis
+                                : null,
+                          ),
+                        ),
+                      ],
+                      SizedBox(height: 14.h),
+                      Wrap(
+                        runSpacing: 10.h,
+                        spacing: 10.w,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          _InfoPill(
+                            label: task.isCompleted
+                                ? 'Completed'
+                                : 'In progress',
+                            color: accentColor,
+                            icon: task.isCompleted
+                                ? Icons.check_circle_rounded
+                                : Icons.radio_button_checked_rounded,
+                          ),
+                          _InfoPill(
+                            label: 'Updated $formatter',
+                            color: const Color(0xFF111827),
+                            icon: Icons.schedule_rounded,
+                            subtle: true,
+                          ),
+                          Wrap(
+                            spacing: 8.w,
+                            children: [
+                              _ActionButton(
+                                icon: Icons.edit_outlined,
+                                onTap: onEdit,
+                              ),
+                              _ActionButton(
+                                icon: Icons.delete_outline_rounded,
+                                onTap: onDelete,
+                                destructive: true,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+            if (isProcessing)
+              const Positioned.fill(
+                child: Center(child: CircularProgressIndicator()),
+              ),
+          ],
         );
       },
     );

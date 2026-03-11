@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_text.dart';
+import '../../blocs/task/task_bloc.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../common/app_section_card.dart';
 import 'task_tile.dart';
@@ -12,6 +13,8 @@ class TaskListSection extends StatefulWidget {
     required this.isCompact,
     required this.isLoading,
     required this.isSubmitting,
+    required this.activeMutation,
+    required this.activeTaskId,
     required this.tasks,
     required this.onRefresh,
     required this.onCreate,
@@ -24,6 +27,8 @@ class TaskListSection extends StatefulWidget {
   final bool isCompact;
   final bool isLoading;
   final bool isSubmitting;
+  final TaskMutationType activeMutation;
+  final String? activeTaskId;
   final List<TaskEntity> tasks;
   final VoidCallback onRefresh;
   final VoidCallback onCreate;
@@ -62,7 +67,6 @@ class _TaskListSectionState extends State<TaskListSection> {
               activeCount: activeCount,
               completedCount: completedCount,
               currentFilter: _filter,
-              isSubmitting: widget.isSubmitting,
               onRefresh: widget.onRefresh,
               onFilterChanged: (filter) => setState(() => _filter = filter),
             ),
@@ -73,6 +77,9 @@ class _TaskListSectionState extends State<TaskListSection> {
               isLoading: widget.isLoading,
               filteredTasks: filteredTasks,
               onCreate: widget.onCreate,
+              isSubmitting: widget.isSubmitting,
+              activeMutation: widget.activeMutation,
+              activeTaskId: widget.activeTaskId,
               onDelete: widget.onDelete,
               onEdit: widget.onEdit,
               onToggle: widget.onToggle,
@@ -90,7 +97,6 @@ class _TaskListHeader extends StatelessWidget {
     required this.activeCount,
     required this.completedCount,
     required this.currentFilter,
-    required this.isSubmitting,
     required this.onRefresh,
     required this.onFilterChanged,
   });
@@ -99,7 +105,6 @@ class _TaskListHeader extends StatelessWidget {
   final int activeCount;
   final int completedCount;
   final _TaskFilter currentFilter;
-  final bool isSubmitting;
   final VoidCallback onRefresh;
   final ValueChanged<_TaskFilter> onFilterChanged;
 
@@ -156,15 +161,6 @@ class _TaskListHeader extends StatelessWidget {
                 selected: currentFilter == _TaskFilter.completed,
                 onTap: () => onFilterChanged(_TaskFilter.completed),
               ),
-              if (isSubmitting)
-                Padding(
-                  padding: EdgeInsets.only(left: 4.w, top: 10.h),
-                  child: SizedBox(
-                    width: 18.w,
-                    height: 18.w,
-                    child: const CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                ),
             ],
           ),
         ),
@@ -178,6 +174,9 @@ class _TaskListContent extends StatelessWidget {
     required this.isLoading,
     required this.filteredTasks,
     required this.onCreate,
+    required this.isSubmitting,
+    required this.activeMutation,
+    required this.activeTaskId,
     required this.onDelete,
     required this.onEdit,
     required this.onToggle,
@@ -186,6 +185,9 @@ class _TaskListContent extends StatelessWidget {
   final bool isLoading;
   final List<TaskEntity> filteredTasks;
   final VoidCallback onCreate;
+  final bool isSubmitting;
+  final TaskMutationType activeMutation;
+  final String? activeTaskId;
   final ValueChanged<String> onDelete;
   final ValueChanged<TaskEntity> onEdit;
   final void Function(TaskEntity task, bool value) onToggle;
@@ -211,8 +213,14 @@ class _TaskListContent extends StatelessWidget {
       separatorBuilder: (context, index) => SizedBox(height: 12.h),
       itemBuilder: (context, index) {
         final task = filteredTasks[index];
+        final isProcessingTask =
+            isSubmitting &&
+            activeTaskId == task.id &&
+            (activeMutation == TaskMutationType.update ||
+                activeMutation == TaskMutationType.delete);
         return TaskTile(
           task: task,
+          isProcessing: isProcessingTask,
           onDelete: () => onDelete(task.id),
           onEdit: () => onEdit(task),
           onToggle: (value) => onToggle(task, value),

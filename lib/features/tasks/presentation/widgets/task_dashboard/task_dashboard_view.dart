@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/widgets/app_confirmation_dialog.dart';
 import '../../../../../core/widgets/app_text.dart';
 import '../../../domain/entities/task_entity.dart';
 import '../../blocs/task/task_bloc.dart';
@@ -68,12 +69,28 @@ class _TaskDashboardViewState extends State<TaskDashboardView> {
                 isCompact: !isTablet,
                 isLoading: state.status == TaskStatus.loading,
                 isSubmitting: state.isSubmitting,
+                activeMutation: state.activeMutation,
+                activeTaskId: state.activeTaskId,
                 tasks: state.tasks,
                 onRefresh: () =>
                     context.read<TaskBloc>().add(const TasksRequested()),
                 onCreate: () => _openEditor(context),
-                onDelete: (taskId) =>
-                    context.read<TaskBloc>().add(TaskDeleted(taskId)),
+                onDelete: (taskId) async {
+                  final shouldDelete = await showAppConfirmationDialog(
+                    context,
+                    title: 'Delete task?',
+                    message:
+                        'This task will be removed permanently. This action cannot be undone.',
+                    confirmLabel: 'Delete',
+                    isDestructive: true,
+                  );
+
+                  if (!shouldDelete || !context.mounted) {
+                    return;
+                  }
+
+                  context.read<TaskBloc>().add(TaskDeleted(taskId));
+                },
                 onEdit: (task) => _openEditor(context, task: task),
                 onToggle: (task, value) {
                   context.read<TaskBloc>().add(
@@ -94,19 +111,12 @@ class _TaskDashboardViewState extends State<TaskDashboardView> {
   }
 
   Future<void> _openEditor(BuildContext context, {TaskEntity? task}) async {
-    final bloc = context.read<TaskBloc>();
-    final result = await showModalBottomSheet<TaskEntity>(
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
       builder: (_) => TaskEditorSheet(task: task),
     );
-
-    if (result == null || !context.mounted) {
-      return;
-    }
-
-    bloc.add(task == null ? TaskCreated(result) : TaskUpdated(result));
   }
 
   Future<void> _openSettings(BuildContext context) async {
@@ -171,6 +181,8 @@ class _TasksTabView extends StatelessWidget {
     required this.isCompact,
     required this.isLoading,
     required this.isSubmitting,
+    required this.activeMutation,
+    required this.activeTaskId,
     required this.tasks,
     required this.onRefresh,
     required this.onCreate,
@@ -182,6 +194,8 @@ class _TasksTabView extends StatelessWidget {
   final bool isCompact;
   final bool isLoading;
   final bool isSubmitting;
+  final TaskMutationType activeMutation;
+  final String? activeTaskId;
   final List<TaskEntity> tasks;
   final VoidCallback onRefresh;
   final VoidCallback onCreate;
@@ -223,6 +237,8 @@ class _TasksTabView extends StatelessWidget {
                       isCompact: compactLayout || isCompact,
                       isLoading: isLoading,
                       isSubmitting: isSubmitting,
+                      activeMutation: activeMutation,
+                      activeTaskId: activeTaskId,
                       tasks: tasks,
                       onRefresh: onRefresh,
                       onCreate: onCreate,

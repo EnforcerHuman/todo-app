@@ -60,6 +60,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     await _submitMutation(
       emit,
       () => _addTask(event.task),
+      mutationType: TaskMutationType.create,
       successMessage: 'Task added.',
     );
   }
@@ -68,6 +69,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     await _submitMutation(
       emit,
       () => _updateTask(event.task),
+      mutationType: TaskMutationType.update,
+      taskId: event.task.id,
       successMessage: 'Task updated.',
     );
   }
@@ -76,6 +79,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     await _submitMutation(
       emit,
       () => _deleteTask(event.taskId),
+      mutationType: TaskMutationType.delete,
+      taskId: event.taskId,
       successMessage: 'Task deleted.',
     );
   }
@@ -90,6 +95,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         taskId: event.taskId,
         isCompleted: event.isCompleted,
       ),
+      mutationType: TaskMutationType.toggle,
+      taskId: event.taskId,
       successMessage: event.isCompleted
           ? 'Task marked as done.'
           : 'Task marked as active.',
@@ -99,9 +106,18 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _submitMutation(
     Emitter<TaskState> emit,
     Future<void> Function() action, {
+    required TaskMutationType mutationType,
+    String? taskId,
     required String successMessage,
   }) async {
-    emit(state.copyWith(isSubmitting: true, clearMessage: true));
+    emit(
+      state.copyWith(
+        isSubmitting: true,
+        activeMutation: mutationType,
+        activeTaskId: taskId,
+        clearMessage: true,
+      ),
+    );
 
     try {
       await action();
@@ -111,6 +127,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           status: TaskStatus.success,
           tasks: tasks,
           isSubmitting: false,
+          activeMutation: mutationType,
+          activeTaskId: taskId,
           message: successMessage,
         ),
       );
@@ -119,6 +137,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         state.copyWith(
           status: TaskStatus.failure,
           isSubmitting: false,
+          activeMutation: mutationType,
+          activeTaskId: taskId,
           message: error.toString().replaceFirst('Exception: ', ''),
         ),
       );

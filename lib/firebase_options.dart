@@ -6,7 +6,7 @@ class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       throw UnsupportedError(
-        'Run flutterfire configure to generate firebase_options.dart.',
+        'not configured for web',
       );
     }
 
@@ -18,7 +18,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.linux:
       case TargetPlatform.fuchsia:
         throw UnsupportedError(
-          'Run flutterfire configure to generate firebase_options.dart.',
+          'not configured for this platform',
         );
     }
   }

@@ -17,7 +17,7 @@ class TaskRemoteDataSource {
 
     final body = jsonDecode(response.body);
     if (body == null) {
-      return const [];
+      return <TaskModel>[];
     }
 
     final map = Map<String, dynamic>.from(body as Map);
